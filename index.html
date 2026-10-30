@@ -35,49 +35,12 @@
 
         .tabs-wrap { max-width: 1200px; margin: 0 auto; padding: 0 1rem; position: relative; z-index: 10; }
         .tabs { display: flex; gap: 0; }
-        .tab { 
-            padding: 0.85rem 1.6rem; 
-            background: #e2e8f0; 
-            border: 2px solid #cbd5e1; 
-            border-bottom: none;
-            border-radius: 10px 10px 0 0; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            font-family: inherit; 
-            font-size: .95rem; 
-            color: #64748b;
-            position: relative;
-            top: 2px;
-            margin-right: 4px;
-        }
+        .tab { padding: 0.85rem 1.6rem; background: #e2e8f0; border: 2px solid #cbd5e1; border-bottom: none; border-radius: 10px 10px 0 0; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: .95rem; color: #64748b; position: relative; top: 2px; margin-right: 4px; }
         .tab:hover:not(.active) { background: #f1f5f9; color: var(--text-main); }
-        .tab.active { 
-            background: var(--bg); 
-            border-color: var(--maroon); 
-            color: var(--maroon);
-            top: 0;
-            z-index: 2;
-            border-bottom: 2px solid var(--bg);
-        }
-        .tab.active[data-tab="learners"] { 
-            border-color: var(--seal-green); 
-            color: var(--seal-green-dark);
-            border-bottom: 2px solid var(--bg);
-        }
-        .tab-content {
-            background: var(--bg);
-            border: 2px solid var(--maroon);
-            border-radius: 0 12px 12px 12px;
-            padding: 1.5rem;
-            margin-top: -2px;
-            position: relative;
-            z-index: 1;
-            min-height: 400px;
-        }
-        .tab-content#tab-learners {
-            border-color: var(--seal-green);
-        }
+        .tab.active { background: var(--bg); border-color: var(--maroon); color: var(--maroon); top: 0; z-index: 2; border-bottom: 2px solid var(--bg); }
+        .tab.active[data-tab="learners"] { border-color: var(--seal-green); color: var(--seal-green-dark); border-bottom: 2px solid var(--bg); }
+        .tab-content { background: var(--bg); border: 2px solid var(--maroon); border-radius: 0 12px 12px 12px; padding: 1.5rem; margin-top: -2px; position: relative; z-index: 1; min-height: 400px; }
+        .tab-content#tab-learners { border-color: var(--seal-green); }
 
         main { max-width: 1200px; margin: 0 auto; padding: 0 1rem 5rem; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 1rem; }
@@ -248,7 +211,6 @@
                 </button>
             </div>
             <div class="logo-stripes" aria-hidden="true"></div>
-
             <div class="filter-bar">
                 <div class="filter-group">
                     <label for="filter-grade">🎓 Grade Level</label>
@@ -337,12 +299,27 @@
 
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbxtiu06jJ_ZBEk6bHoLWpBTpvWBeD7A9KRqZ7zbLyr4TeDrNfoCsByDJjoWI1vcmK4peg/exec';
-        
-        // ✅ UPDATED: Points to your new school-owned spreadsheet
         const SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1suT63ZBJa9xpMXbWtHTwWnoQ6lun9dw-bLX3RJZ2T4c/edit';
-        
         const LEARNERS_API_URL = 'https://script.google.com/macros/s/AKfycbwQDlKlljS0BlUpRbnpDlxObm7T-S9vnZaENQEceJGSW2Ja5oOJDbMEBhkciqkpKjGQvQ/exec';
         const ENCODE_FORM_URL  = 'https://docs.google.com/forms/d/e/1FAIpQLSccDrLoXG4udFfn2RM7vIm96Hzs61x3tbYLY45pv4ZQnLZ5Rw/viewform';
+
+        // ✅ REAL ENTRY IDs EXTRACTED FROM YOUR FORM LINK
+        const FORM_ENTRY_IDS = {
+            lrn: 'entry.387494708',
+            lastName: 'entry.1927371055',
+            firstName: 'entry.1491424526',
+            middleName: 'entry.742706498',
+            gender: 'entry.1961045574',
+            birthday: 'entry.390767720',
+            motherName: 'entry.1577214647',
+            motherContact: 'entry.90458228',
+            fatherName: 'entry.1693124455',
+            fatherContact: 'entry.475767932',
+            emergency: 'entry.933287025',
+            address: 'entry.1416678204',
+            grade: 'entry.848750240',
+            section: 'entry.139428600'
+        };
 
         const container = document.getElementById('links-container');
         const refreshBtn = document.getElementById('refresh-btn');
@@ -366,6 +343,7 @@
 
         let currentTab = 'resources';
         let resourcesOk = false;
+        let currentModalLearner = null;
 
         function updateFab() {
             const isLearners = currentTab === 'learners';
@@ -520,7 +498,6 @@
         const nameInput = document.getElementById('filter-name');
         let learnersAll = [], learnersLoaded = false;
         let lastGlobalTimestamp = null;
-        let currentModalLearner = null;
 
         const fullName = r => `${toStr(r.firstName)} ${toStr(r.middleName)} ${toStr(r.lastName)}`.replace(/\s+/g, ' ').trim();
 
@@ -598,7 +575,6 @@
             filtered.forEach(r => {
                 const status = parseGradeStatus(r.grade);
                 let displayGrade = status.isGraduated ? 'GRADUATED' : status.base;
-
                 let statusHtml = `<button class="promote-btn" title="Promote learner">🎓</button>`;
                 if (status.isGraduated) statusHtml = `<span class="status-badge graduated">🎓 GRADUATED</span>`;
                 else if (status.isPromoted) statusHtml = `<span class="status-badge promoted">✅ PROMOTED</span>`;
@@ -608,13 +584,7 @@
 
                 const b = document.createElement('div');
                 b.className = 'learner-row';
-                b.innerHTML = `
-                    <div class="lr-info">
-                        <span class="lr-name">${esc(r.lastName)}, ${esc(r.firstName)} ${esc(r.middleName)}</span>
-                        <span class="lr-sub">LRN: ${esc(r.lrn) || '—'}</span>
-                    </div>
-                    ${chipHtml}
-                `;
+                b.innerHTML = `<div class="lr-info"><span class="lr-name">${esc(r.lastName)}, ${esc(r.firstName)} ${esc(r.middleName)}</span><span class="lr-sub">LRN: ${esc(r.lrn) || '—'}</span></div>${chipHtml}`;
                 
                 const statusContainer = document.createElement('div');
                 statusContainer.innerHTML = statusHtml;
@@ -631,15 +601,11 @@
         async function handlePromote(r) {
             const status = parseGradeStatus(r.grade);
             if (status.isPromoted || status.isGraduated) {
-                if (confirm(`Revert promotion for ${fullName(r)}?\n\nTheir grade will return to "${status.base}".`)) {
-                    await updateLearnerGrade(r, status.base);
-                }
+                if (confirm(`Revert promotion for ${fullName(r)}?\n\nTheir grade will return to "${status.base}".`)) await updateLearnerGrade(r, status.base);
             } else {
                 let nextStatus = status.base === '6' ? 'GRADUATED' : status.base + '-PROMOTED';
                 const msg = nextStatus === 'GRADUATED' ? `Mark ${fullName(r)} as GRADUATED?` : `Mark ${fullName(r)} as ${nextStatus}?`;
-                if (confirm(msg + '\n\nThis will update their record in the database.')) {
-                    await updateLearnerGrade(r, nextStatus);
-                }
+                if (confirm(msg + '\n\nThis will update their record in the database.')) await updateLearnerGrade(r, nextStatus);
             }
         }
 
