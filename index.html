@@ -33,12 +33,53 @@
         .school-lines span.gold { background: rgba(255,210,0,.18); border-color: rgba(255,210,0,.55); color: var(--gold-soft); }
         .header-date { font-size: .8rem; font-weight: 700; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.28); padding: 6px 14px; border-radius: 99px; }
 
-        .tabs { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; gap: 0.5rem; margin-top: -24px; position: relative; z-index: 10; }
-        .tab { padding: 0.75rem 1.5rem; background: white; border: 2px solid #e2e8f0; border-bottom: none; border-radius: 8px 8px 0 0; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 -2px 4px rgba(0,0,0,0.05); font-family: inherit; font-size: .95rem; }
-        .tab.active { background: var(--bg); border-color: var(--maroon); color: var(--maroon); }
-        .tab.active[data-tab="learners"] { border-color: var(--seal-green); color: var(--seal-green-dark); }
+        .tabs-wrap { max-width: 1200px; margin: 0 auto; padding: 0 1rem; position: relative; z-index: 10; }
+        .tabs { display: flex; gap: 0; }
+        .tab { 
+            padding: 0.85rem 1.6rem; 
+            background: #e2e8f0; 
+            border: 2px solid #cbd5e1; 
+            border-bottom: none;
+            border-radius: 10px 10px 0 0; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            font-family: inherit; 
+            font-size: .95rem; 
+            color: #64748b;
+            position: relative;
+            top: 2px;
+            margin-right: 4px;
+        }
+        .tab:hover:not(.active) { background: #f1f5f9; color: var(--text-main); }
+        .tab.active { 
+            background: var(--bg); 
+            border-color: var(--maroon); 
+            color: var(--maroon);
+            top: 0;
+            z-index: 2;
+            border-bottom: 2px solid var(--bg);
+        }
+        .tab.active[data-tab="learners"] { 
+            border-color: var(--seal-green); 
+            color: var(--seal-green-dark);
+            border-bottom: 2px solid var(--bg);
+        }
+        .tab-content {
+            background: var(--bg);
+            border: 2px solid var(--maroon);
+            border-radius: 0 12px 12px 12px;
+            padding: 1.5rem;
+            margin-top: -2px;
+            position: relative;
+            z-index: 1;
+            min-height: 400px;
+        }
+        .tab-content#tab-learners {
+            border-color: var(--seal-green);
+        }
 
-        main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 5rem; }
+        main { max-width: 1200px; margin: 0 auto; padding: 0 1rem 5rem; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 1rem; }
         .section-header h2 { color: var(--maroon-dark); }
         .refresh-btn { background: white; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; font-family: inherit; }
@@ -141,8 +182,9 @@
         @media (max-width: 640px) {
             .header-content { flex-direction: column; align-items: flex-start; gap: .8rem; }
             .school-logo { width: 72px; height: 72px; }
-            .tabs { overflow-x: auto; padding-bottom: 4px; }
-            .tab { white-space: nowrap; }
+            .tabs-wrap { padding: 0 .5rem; }
+            .tab { padding: 0.7rem 1rem; font-size: .85rem; }
+            .tab-content { padding: 1rem; }
             .fab { bottom: 1.5rem; right: 1.5rem; width: 50px; height: 50px; font-size: 2rem; }
         }
     </style>
@@ -164,10 +206,12 @@
         </div>
     </header>
 
-    <nav class="tabs">
-        <button class="tab active" data-tab="resources">📚 School Resources</button>
-        <button class="tab" data-tab="learners"> Learners Data Hub</button>
-    </nav>
+    <div class="tabs-wrap">
+        <nav class="tabs">
+            <button class="tab active" data-tab="resources">📚 School Resources</button>
+            <button class="tab" data-tab="learners">🎓 Learners Data Hub</button>
+        </nav>
+    </div>
 
     <main>
         <div id="tab-resources" class="tab-content">
@@ -184,10 +228,10 @@
                     <select id="filter-year"><option value="">All School Years</option></select>
                 </div>
                 <div class="filter-group grow">
-                    <label for="filter-title"> Search by Title</label>
+                    <label for="filter-title">🔍 Search by Title</label>
                     <input type="text" id="filter-title" placeholder="Type any letter... links rearrange instantly (A–Z)" autocomplete="off">
                 </div>
-                <button id="filter-clear" class="clear-btn"> Clear</button>
+                <button id="filter-clear" class="clear-btn">✕ Clear</button>
             </div>
             <p id="filter-count" class="filter-count" style="margin-bottom: 1.1rem;"></p>
             <div id="links-container" class="links-grid">
@@ -278,7 +322,7 @@
             <h3>➕ Add Learner Data</h3>
             <p class="modal-desc">Bulk-add learners with a CSV file, or encode them one-by-one using the Google Form.</p>
             <div class="addbtns">
-                <button id="download-sample" class="modal-btn btn-sample"> Download CSV Sample</button>
+                <button id="download-sample" class="modal-btn btn-sample">⬇ Download CSV Sample</button>
                 <button id="upload-csv-btn" class="modal-btn btn-submit">⬆ Upload CSV</button>
             </div>
             <input type="file" id="csv-file" accept=".csv,text/csv" style="display:none">
@@ -293,7 +337,10 @@
 
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbxtiu06jJ_ZBEk6bHoLWpBTpvWBeD7A9KRqZ7zbLyr4TeDrNfoCsByDJjoWI1vcmK4peg/exec';
-        const SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1pVX55xG3JlPsyhuVJd0P1uPFtdcni-CXwti5t6SMUD4/edit?usp=sharing';
+        
+        // ✅ UPDATED: Points to your new school-owned spreadsheet
+        const SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1suT63ZBJa9xpMXbWtHTwWnoQ6lun9dw-bLX3RJZ2T4c/edit';
+        
         const LEARNERS_API_URL = 'https://script.google.com/macros/s/AKfycbwQDlKlljS0BlUpRbnpDlxObm7T-S9vnZaENQEceJGSW2Ja5oOJDbMEBhkciqkpKjGQvQ/exec';
         const ENCODE_FORM_URL  = 'https://docs.google.com/forms/d/e/1FAIpQLSccDrLoXG4udFfn2RM7vIm96Hzs61x3tbYLY45pv4ZQnLZ5Rw/viewform';
 
@@ -309,12 +356,10 @@
         function toStr(val) { if (val === null || val === undefined) return ''; return String(val).trim(); }
         function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-        // Helper to parse grade status
         function parseGradeStatus(gradeStr) {
             const raw = toStr(gradeStr).toUpperCase();
             const isPromoted = raw.endsWith('-PROMOTED');
             const base = raw.replace(/-PROMOTED$/i, '');
-            // Treat "GRADUATED" or "6-PROMOTED" as Graduated
             const isGraduated = (raw === 'GRADUATED') || (base === '6' && isPromoted);
             return { raw, base, isPromoted, isGraduated };
         }
@@ -413,7 +458,7 @@
                 countEl.textContent = `Showing ${filtered.length} of ${allLinks.length} resource${allLinks.length === 1 ? '' : 's'} • ⚡ Priority order`;
             }
             container.innerHTML = '';
-            if (!filtered.length) { container.innerHTML = '<div class="status-msg"> No resources match your filter.</div>'; return; }
+            if (!filtered.length) { container.innerHTML = '<div class="status-msg">🔍 No resources match your filter.</div>'; return; }
             filtered.forEach(item => {
                 const hasPassword = toStr(item.password) !== '';
                 let pClass = 'p1', badgeText = 'Reference Vault', icon = '🗄️';
@@ -425,7 +470,7 @@
                 card.innerHTML = `<span class="badge ${pClass}">${icon} ${badgeText}</span><h3 class="card-title">${esc(item.title)}</h3><div class="card-meta">📅 School Year: ${esc(item.year) || '—'}</div>${note ? `<div class="card-note"><strong>Note:</strong> ${esc(note)}</div>` : ''}`;
                 const openBtn = document.createElement('button');
                 openBtn.className = 'card-link';
-                openBtn.innerHTML = `${hasPassword ? ' Unlock Resource' : 'Open Resource'} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>`;
+                openBtn.innerHTML = `${hasPassword ? '🔒 Unlock Resource' : 'Open Resource'} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>`;
                 openBtn.addEventListener('click', () => handleOpenLink(item));
                 card.appendChild(openBtn);
                 container.appendChild(card);
@@ -466,9 +511,6 @@
         refreshBtn.addEventListener('click', loadLinks);
         loadLinks();
 
-        // =====================================================
-        // ============ LEARNERS DATA HUB ======================
-        // =====================================================
         const learnerList = document.getElementById('learner-list');
         const learnerCount = document.getElementById('learner-count');
         const learnersRefresh = document.getElementById('learners-refresh');
@@ -478,6 +520,7 @@
         const nameInput = document.getElementById('filter-name');
         let learnersAll = [], learnersLoaded = false;
         let lastGlobalTimestamp = null;
+        let currentModalLearner = null;
 
         const fullName = r => `${toStr(r.firstName)} ${toStr(r.middleName)} ${toStr(r.lastName)}`.replace(/\s+/g, ' ').trim();
 
@@ -517,15 +560,9 @@
 
             const filtered = learnersAll.filter(r => {
                 const status = parseGradeStatus(r.grade);
-                
                 let okGrade = true;
-                if (gradeVal === 'GRADUATED') {
-                    okGrade = status.isGraduated;
-                } else if (gradeVal !== '') {
-                    // Match base grade (e.g. "1" matches "1" and "1-PROMOTED")
-                    okGrade = status.base === gradeVal;
-                }
-
+                if (gradeVal === 'GRADUATED') okGrade = status.isGraduated;
+                else if (gradeVal !== '') okGrade = status.base === gradeVal;
                 const okSection = sectionVal === '' || toStr(r.section) === sectionVal;
                 const okLrn = lrnVal === '' || toStr(r.lrn).toLowerCase().includes(lrnVal);
                 const name = fullName(r).toLowerCase();
@@ -563,17 +600,11 @@
                 let displayGrade = status.isGraduated ? 'GRADUATED' : status.base;
 
                 let statusHtml = `<button class="promote-btn" title="Promote learner">🎓</button>`;
-                if (status.isGraduated) {
-                    statusHtml = `<span class="status-badge graduated">🎓 GRADUATED</span>`;
-                } else if (status.isPromoted) {
-                    statusHtml = `<span class="status-badge promoted">✅ PROMOTED</span>`;
-                }
+                if (status.isGraduated) statusHtml = `<span class="status-badge graduated">🎓 GRADUATED</span>`;
+                else if (status.isPromoted) statusHtml = `<span class="status-badge promoted">✅ PROMOTED</span>`;
 
-                // Hide chip entirely if graduated
                 let chipHtml = '';
-                if (!status.isGraduated) {
-                    chipHtml = `<span class="lr-chip">Gr. ${esc(displayGrade)} – ${esc(r.section) || '—'}</span>`;
-                }
+                if (!status.isGraduated) chipHtml = `<span class="lr-chip">Gr. ${esc(displayGrade)} – ${esc(r.section) || '—'}</span>`;
 
                 const b = document.createElement('div');
                 b.className = 'learner-row';
@@ -589,17 +620,9 @@
                 statusContainer.innerHTML = statusHtml;
                 b.appendChild(statusContainer);
 
-                b.addEventListener('click', (e) => {
-                    if (!e.target.closest('.promote-btn')) openLearnerModal(r);
-                });
-
+                b.addEventListener('click', (e) => { if (!e.target.closest('.promote-btn')) openLearnerModal(r); });
                 const pBtn = statusContainer.querySelector('.promote-btn');
-                if (pBtn) {
-                    pBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        handlePromote(r);
-                    });
-                }
+                if (pBtn) pBtn.addEventListener('click', (e) => { e.stopPropagation(); handlePromote(r); });
 
                 learnerList.appendChild(b);
             });
@@ -607,25 +630,13 @@
 
         async function handlePromote(r) {
             const status = parseGradeStatus(r.grade);
-
             if (status.isPromoted || status.isGraduated) {
-                // Revert
                 if (confirm(`Revert promotion for ${fullName(r)}?\n\nTheir grade will return to "${status.base}".`)) {
                     await updateLearnerGrade(r, status.base);
                 }
             } else {
-                // Promote current grade (e.g. "1" -> "1-PROMOTED", "6" -> "GRADUATED")
-                let nextStatus = '';
-                if (status.base === '6') {
-                    nextStatus = 'GRADUATED';
-                } else {
-                    nextStatus = status.base + '-PROMOTED';
-                }
-
-                const msg = nextStatus === 'GRADUATED'
-                    ? `Mark ${fullName(r)} as GRADUATED?`
-                    : `Mark ${fullName(r)} as ${nextStatus}?`;
-                
+                let nextStatus = status.base === '6' ? 'GRADUATED' : status.base + '-PROMOTED';
+                const msg = nextStatus === 'GRADUATED' ? `Mark ${fullName(r)} as GRADUATED?` : `Mark ${fullName(r)} as ${nextStatus}?`;
                 if (confirm(msg + '\n\nThis will update their record in the database.')) {
                     await updateLearnerGrade(r, nextStatus);
                 }
@@ -636,76 +647,64 @@
             r.grade = newGrade;
             renderLearners();
             try {
-                await fetch(LEARNERS_API_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ rows: [r] })
-                });
-            } catch (err) {
-                alert('Failed to save to database. Please refresh and try again.');
-            }
+                await fetch(LEARNERS_API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rows: [r] }) });
+            } catch (err) { alert('Failed to save to database. Please refresh and try again.'); }
         }
 
         gradeSelect.addEventListener('change', renderLearners);
         sectionSelect.addEventListener('change', renderLearners);
         lrnInput.addEventListener('input', renderLearners);
         nameInput.addEventListener('input', renderLearners);
-        document.getElementById('learners-clear').addEventListener('click', () => {
-            gradeSelect.value = '';
-            sectionSelect.value = '';
-            lrnInput.value = '';
-            nameInput.value = '';
-            renderLearners();
-        });
+        document.getElementById('learners-clear').addEventListener('click', () => { gradeSelect.value = ''; sectionSelect.value = ''; lrnInput.value = ''; nameInput.value = ''; renderLearners(); });
         learnersRefresh.addEventListener('click', loadLearners);
 
         function openLearnerModal(r) {
+            currentModalLearner = r;
             document.getElementById('detail-name').textContent = fullName(r) || '(No name)';
-            
             const status = parseGradeStatus(r.grade);
             let displayGrade = status.isGraduated ? 'GRADUATED' : status.base;
-            
             let gradeStatusHtml = '';
             if (status.isGraduated) {
-                // Only show badge, no section text
                 gradeStatusHtml = `<span class="status-badge graduated" style="font-size: 1rem; padding: 8px 16px;">🎓 GRADUATED</span>`;
             } else {
                 gradeStatusHtml = `${esc(displayGrade)} – ${esc(r.section) || '—'}`;
-                if (status.isPromoted) {
-                    gradeStatusHtml += ` <span class="status-badge promoted" style="margin-left:8px;">✅ PROMOTED</span>`;
-                }
+                if (status.isPromoted) gradeStatusHtml += ` <span class="status-badge promoted" style="margin-left:8px;">✅ PROMOTED</span>`;
             }
-
             const rows = [
-                ['Full Name', fullName(r), false],
-                ['LRN', r.lrn, false],
-                ['Gender', r.gender, false],
-                ['Birthday', r.birthday, false],
-                ['Mother', r.motherName, false],
-                ["Mother's Contact", r.motherContact, false],
-                ['Father', r.fatherName, false],
-                ["Father's Contact", r.fatherContact, false],
-                ['Emergency Contact', r.emergency, false],
-                ['Address', r.address, false],
+                ['Full Name', fullName(r), false], ['LRN', r.lrn, false], ['Gender', r.gender, false],
+                ['Birthday', r.birthday, false], ['Mother', r.motherName, false], ["Mother's Contact", r.motherContact, false],
+                ['Father', r.fatherName, false], ["Father's Contact", r.fatherContact, false],
+                ['Emergency Contact', r.emergency, false], ['Address', r.address, false],
                 ['Grade & Section', gradeStatusHtml, true]
             ];
-            
-            document.getElementById('detail-grid').innerHTML = rows.map(([k, v, isHtml]) => 
-                `<dt>${k}</dt><dd>${isHtml ? v : esc(toStr(v) || '—')}</dd>`
-            ).join('');
-
+            document.getElementById('detail-grid').innerHTML = rows.map(([k, v, isHtml]) => `<dt>${k}</dt><dd>${isHtml ? v : esc(toStr(v) || '—')}</dd>`).join('');
             const timestampEl = document.getElementById('record-timestamp');
-            if (r.lastUpdated) {
-                timestampEl.style.display = 'block';
-                timestampEl.innerHTML = `📅 Last updated: ${esc(r.lastUpdated)}`;
-            } else {
-                timestampEl.style.display = 'none';
-            }
+            if (r.lastUpdated) { timestampEl.style.display = 'block'; timestampEl.innerHTML = `📅 Last updated: ${esc(r.lastUpdated)}`; }
+            else timestampEl.style.display = 'none';
             document.getElementById('learner-modal').classList.add('active');
         }
         document.getElementById('detail-close').addEventListener('click', () => document.getElementById('learner-modal').classList.remove('active'));
         document.getElementById('learner-modal').addEventListener('click', (e) => { if (e.target.id === 'learner-modal') e.target.classList.remove('active'); });
-        document.getElementById('detail-update').addEventListener('click', () => window.open(ENCODE_FORM_URL, '_blank'));
+        
+        document.getElementById('detail-update').addEventListener('click', () => {
+            if (currentModalLearner) {
+                window.open(getPrefilledFormUrl(currentModalLearner), '_blank');
+            } else {
+                window.open(ENCODE_FORM_URL, '_blank');
+            }
+        });
+
+        function getPrefilledFormUrl(learner) {
+            if (!learner) return ENCODE_FORM_URL;
+            const base = ENCODE_FORM_URL.split('?')[0];
+            const params = new URLSearchParams();
+            for (const key in FORM_ENTRY_IDS) {
+                if (learner[key] && learner[key] !== '') {
+                    params.append(FORM_ENTRY_IDS[key], learner[key]);
+                }
+            }
+            return `${base}?${params.toString()}&usp=pp_url`;
+        }
 
         const CSV_SAMPLE = 'LRN,Last Name,First Name,Middle Name,Gender,Birthday,Mother\'s Name,Mother\'s Contact Number,Father\'s Name,Father\'s Contact Number,Emergency Contact Number,Address,Grade Level,Section\n' +
             '101234567891,Dela Cruz,Juan,Santos,Male,2014-08-15,Maria Santos,09171234567,Pedro Dela Cruz,09181234567,09991234567,"123 Sitio Sampaga, Brgy. Poblacion, Candelaria, Quezon",4,Sampaga\n' +
@@ -713,34 +712,21 @@
 
         const addStatus = document.getElementById('add-status');
         function setAddStatus(msg, isErr) { addStatus.textContent = msg; addStatus.classList.toggle('err', !!isErr); }
-
         function openAddModal() { setAddStatus(''); document.getElementById('add-modal').classList.add('active'); }
         document.getElementById('add-close').addEventListener('click', () => document.getElementById('add-modal').classList.remove('active'));
         document.getElementById('add-modal').addEventListener('click', (e) => { if (e.target.id === 'add-modal') e.target.classList.remove('active'); });
         document.getElementById('open-form-btn').addEventListener('click', () => window.open(ENCODE_FORM_URL, '_blank'));
-
         document.getElementById('download-sample').addEventListener('click', () => {
             const blob = new Blob([CSV_SAMPLE], { type: 'text/csv' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'learners_csv_sample.csv';
-            a.click();
-            URL.revokeObjectURL(a.href);
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'learners_csv_sample.csv'; a.click(); URL.revokeObjectURL(a.href);
         });
 
         function parseCSV(text) {
             const rows = []; let row = [], cur = '', inQ = false;
             for (let i = 0; i < text.length; i++) {
                 const ch = text[i];
-                if (inQ) {
-                    if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else inQ = false; }
-                    else cur += ch;
-                } else {
-                    if (ch === '"') inQ = true;
-                    else if (ch === ',') { row.push(cur); cur = ''; }
-                    else if (ch === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
-                    else if (ch !== '\r') cur += ch;
-                }
+                if (inQ) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else inQ = false; } else cur += ch; }
+                else { if (ch === '"') inQ = true; else if (ch === ',') { row.push(cur); cur = ''; } else if (ch === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; } else if (ch !== '\r') cur += ch; }
             }
             if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
             return rows.filter(r => r.some(c => c.trim() !== ''));
@@ -761,15 +747,11 @@
             const grid = parseCSV(text);
             if (grid.length < 2) throw new Error('CSV appears empty (need a header row + at least 1 learner).');
             const idx = {};
-            grid[0].forEach((h, i) => {
-                const key = HEADER_MAP[String(h).toLowerCase().replace(/[^a-z]/g, '')];
-                if (key) idx[key] = i;
-            });
+            grid[0].forEach((h, i) => { const key = HEADER_MAP[String(h).toLowerCase().replace(/[^a-z]/g, '')]; if (key) idx[key] = i; });
             if (!('lrn' in idx) || !('lastName' in idx)) throw new Error('CSV headers not recognized. Use the Download CSV Sample template.');
             const out = [];
             for (let r = 1; r < grid.length; r++) {
-                const rec = {};
-                Object.keys(idx).forEach(k => { rec[k] = toStr(grid[r][idx[k]]); });
+                const rec = {}; Object.keys(idx).forEach(k => { rec[k] = toStr(grid[r][idx[k]]); });
                 if (rec.lrn || rec.lastName || rec.firstName) out.push(rec);
             }
             return out;
@@ -778,27 +760,18 @@
         const csvFile = document.getElementById('csv-file');
         document.getElementById('upload-csv-btn').addEventListener('click', () => csvFile.click());
         csvFile.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            csvFile.value = '';
+            const file = e.target.files[0]; csvFile.value = '';
             if (!file) return;
             let rows;
-            try {
-                rows = csvToRows(await file.text());
-            } catch (err) { setAddStatus('❌ ' + err.message, true); return; }
+            try { rows = csvToRows(await file.text()); } catch (err) { setAddStatus('❌ ' + err.message, true); return; }
             if (!rows.length) { setAddStatus('❌ No valid learner rows found in the CSV.', true); return; }
-            setAddStatus(` Uploading ${rows.length} learner(s)...`);
+            setAddStatus(`⏳ Uploading ${rows.length} learner(s)...`);
             try {
-                await fetch(LEARNERS_API_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ rows })
-                });
+                await fetch(LEARNERS_API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rows }) });
                 setAddStatus(`✅ Uploaded ${rows.length} learner(s)! Refreshing database...`);
                 await loadLearners();
                 setAddStatus(`✅ Done! Database now has ${learnersAll.length} learner(s).`);
-            } catch (err) {
-                setAddStatus('❌ Upload failed: ' + err.message, true);
-            }
+            } catch (err) { setAddStatus('❌ Upload failed: ' + err.message, true); }
         });
     </script>
 </body>
